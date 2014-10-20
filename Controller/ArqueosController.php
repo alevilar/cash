@@ -17,6 +17,7 @@ class ArqueosController extends CashAppController
 
     public function index()
     {
+        $this->Paginator->settings['order'] = 'Arqueo.datetime DESC';
         $arqueos = $this->Paginator->paginate();
         $cajas = $this->Arqueo->Caja->find('list');
         $this->set(compact('arqueos', 'cajas'));
