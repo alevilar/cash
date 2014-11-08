@@ -71,7 +71,7 @@ if ( empty($cajas)) {
             ?>
             <tr class="<?php echo $tdClass ?>">
                 <td><?php echo $arq['Caja']['name'] ?></td>
-                <td><?php echo strftime('%a %d de %b %H:%M ', strtotime($arq['Arqueo']['datetime'])) ?></td>
+                <td><?php echo $this->Time->format( $arq['Arqueo']['datetime'], '%a %d de %b %H:%M ') ?></td>
 
 
                 <td><?php echo $this->Number->currency($arq['Arqueo']['saldo']) ?></td>
@@ -82,8 +82,8 @@ if ( empty($cajas)) {
                 <td><?php echo  $this->Number->currency($arq['Arqueo']['egreso']) ?></td>
                 <td><?php echo  $this->Number->currency($arq['Arqueo']['otros_egresos']) ?></td>
                 <td><?php echo  $this->Number->currency($arq['Arqueo']['importe_final']) ?></td>
-                <td><?php echo date('d/m/Y H:i:s', strtotime($arq['Arqueo']['created'])) ?></td>
-                <td><?php echo date('d/m/Y H:i:s', strtotime($arq['Arqueo']['modified'])) ?></td>
+                <td><?php echo $this->Time->format($arq['Arqueo']['created'], '%a %d de %b %H:%M ') ?></td>
+                <td><?php echo $this->Time->format($arq['Arqueo']['modified'], '%a %d de %b %H:%M ') ?></td>
                 <td><?php echo $this->Html->link('Editar', array('action'=>'edit', $arq['Arqueo']['id']) ); ?></td>
             </tr>
 
