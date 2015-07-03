@@ -10,6 +10,8 @@ class ZetasController extends CashAppController
 
     public function index()
     {        
+
+        $model = $this->{$this->modelClass};
         $conditions = array();
         $url = $this->params['url'];
         unset($url['ext']);
@@ -23,9 +25,9 @@ class ZetasController extends CashAppController
             $conditions['Zeta.created <='] = $url['fecha_hasta'];
             $this->request->data['Zeta']['fecha_hasta'] = $url['fecha_hasta'];
         }
-
         $this->Paginator->settings['conditions'] = $conditions;
         $zetas = $this->Paginator->paginate();
+
         $this->set(compact('zetas'));
         
     }

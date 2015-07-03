@@ -4,12 +4,13 @@
 class Zeta extends CashAppModel {
 
 	public $name = 'Zeta';
+
 	public $validate = array(
                 'numero_comprobante' => array('numeric'),
                 'total_ventas' => array('numeric'),
 	);
         
-        public $order = array('Zeta.numero_comprobante DESC');
+  public $order = array('Zeta.numero_comprobante' => 'DESC');
 
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 	public $belongsTo = array(
@@ -17,7 +18,7 @@ class Zeta extends CashAppModel {
 	);
 
         
-        function beforeSave($options = array())
+  public function beforeSave($options = array())
         {
             if (empty($this->data['Zeta']['total_ventas'])){
                 $this->data['Zeta']['total_ventas'] = 0;
@@ -37,7 +38,7 @@ class Zeta extends CashAppModel {
             return parent::beforeSave($options);
         }
         
-        function delDia($desde, $hasta = null){
+public function delDia($desde, $hasta = null){
              $horarioCorte = Configure::read('Horario.corte_del_dia');
             if ( $horarioCorte < 10 ) {
                 $horarioCorte = "0$horarioCorte";
@@ -63,4 +64,3 @@ class Zeta extends CashAppModel {
             return $zetas;
         }
 }
-?>

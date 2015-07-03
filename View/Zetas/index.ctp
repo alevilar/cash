@@ -5,7 +5,7 @@
 
     <div class="pull-right">
     <?php
-    echo $this->Form->create('Zeta', array('type' => 'get', 'url' => $this->action, 'class' => 'form-inline', 'role' => "form"));
+    echo $this->Form->create('Zeta', array('type' => 'get', 'class' => 'form-inline', 'role' => "form"));
     ?>
             <?php echo $this->Form->input('fecha_desde', array(
                 'label' => array(
@@ -34,8 +34,7 @@
     ?>
         <br>
         <?php
-
-        echo $this->Html->link('Descargar Excel', $this->action . '.xls' . strstr($_SERVER['REQUEST_URI'], '?'));
+        echo $this->Html->link('Descargar Excel', $this->here . '.xls' . strstr($_SERVER['REQUEST_URI'], '?'));
         ?>
     </div>
 <br><br>
