@@ -152,11 +152,14 @@ echo $this->Html->css('/cash/css/style_cash');
                     <div class="row">
                         <p class="text-center">
                         <?php 
-                        echo $this->Html->link("Imprimir Z", array('plugin'=>'adition', 'controller'=>'cashier', 'action'=>'cierre_z'), array(
-                            'id'=>'btn-imprimir-z', 
-                            'class'=>'btn btn-success', 
-                            'role'=>'buton'
-                            ));
+                        echo $this->Html->link("Imprimir Z"
+                            , array('plugin'=>'printers', 'controller'=>'printers', 'action'=>'cierre', 'Z')
+                            , array(
+                                'id'=>'btn-imprimir-z', 
+                                'class'=>'btn btn-success', 
+                                'role'=>'buton'
+                                )
+                            );
                         ?>
                         </p>
                         <div class="col-md-6">
