@@ -17,6 +17,20 @@ class Zeta extends CashAppModel {
             'Cash.Arqueo'
 	);
 
+
+  public $actsAs = array(
+        'Risto.DiaBuscable' => array(
+                'fechaField' => 'created',
+                'fieldsParaSumatoria' => array(
+                     //   "total_ventas",
+                        "monto_iva",
+                        "monto_neto",
+                        "nota_credito_iva",
+                        "nota_credito_neto",
+                ),
+            ),
+        );
+
         
   public function beforeSave($options = array())
         {
@@ -38,29 +52,5 @@ class Zeta extends CashAppModel {
             return parent::beforeSave($options);
         }
         
-public function delDia($desde, $hasta = null){
-             $horarioCorte = Configure::read('Horario.corte_del_dia');
-            if ( $horarioCorte < 10 ) {
-                $horarioCorte = "0$horarioCorte";
-            }
-            
-            if (empty($hasta)){
-                $hasta = $desde;
-                
-            }
-            $zetas = $this->find('all', array(
-              'fields'  => array(
-                  "DATE(SUBTIME(Zeta.created, '$horarioCorte:00:00')) as fecha",                  
-                  'sum(Zeta.total_ventas) as ventas',
-                  '(sum(Zeta.monto_iva)- sum(Zeta.nota_credito_iva)) as iva',
-                  '(sum(Zeta.monto_neto)-sum(Zeta.nota_credito_neto)) as neto',
-              ),
-              'conditions' => array(
-                  "DATE(SUBTIME(Zeta.created, '$horarioCorte:00:00')) BETWEEN ? AND ?" => array($desde, $hasta)
-              ),
-              'group' => array('fecha'),
-               'order' => array('fecha DESC'),
-            ));
-            return $zetas;
-        }
+
 }
