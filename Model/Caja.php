@@ -6,7 +6,7 @@ class Caja extends CashAppModel {
 
 	public $name = 'Caja';
 	public $validate = array(
-		'name' => array('isUnique', 'notEmpty'),
+		'name' => array('isUnique', 'notBlank'),
 		'computa_ventas' => array('boolean'),
                 'computa_pagos' => array('boolean'),
 	);

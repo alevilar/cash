@@ -10,8 +10,8 @@ class Arqueo extends CashAppModel {
                     'rule'    => array('datetime', 'ymd'),
                     'message' => 'La fecha y la hora no es un formato válido.'
                 ),
-                'importe_inicial' => array('numeric', 'notEmpty'),
-                'importe_final' => array('numeric', 'notEmpty'),
+                'importe_inicial' => array('numeric', 'notBlank'),
+                'importe_final' => array('numeric', 'notBlank'),
 	);
         
         public $order = array('Arqueo.datetime DESC');

@@ -213,10 +213,9 @@ class ArqueosController extends CashAppController
     
     public function edit($id) {
         
-        if ( $this->request->is('post') ) {
-            $this->Arqueo->create();
+        if ( $this->request->is(array('post', 'put')) ) {
             $error = false;
-            if ($this->Arqueo->save($this->request->data)) {
+            if ( $this->Arqueo->save($this->request->data) ) {
 
                 if ( !empty($this->request->data['Arqueo']['hacer_cierre_zeta']) ) {
                     $this->Arqueo->Zeta->create();
@@ -228,7 +227,6 @@ class ArqueosController extends CashAppController
                 }
                 if (!$error) {
                     $this->__enviarArqueoPorMail($this->Arqueo->id);                    
-                    $this->redirect(array('action'=>'index'));
                 }
                 
             } else {
@@ -237,6 +235,7 @@ class ArqueosController extends CashAppController
             }
             if (!$error) {
                 $this->Session->setFlash("Se guardó un nuevo arqueo de caja");
+                $this->redirect(array('action'=>'index'));
             }
         } else {
             $this->request->data = $this->Arqueo->read(null, $id);
