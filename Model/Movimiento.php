@@ -5,8 +5,8 @@ class Movimiento extends CashAppModel {
 
 	public $name = 'Movimiento';
 	public $validate = array(
-                'de_caja_id' => array('numeric', 'notEmpty'),
-                'a_caja_id' => array('numeric', 'notEmpty'),
+                'de_caja_id' => array('numeric', 'notBlank'),
+                'a_caja_id' => array('numeric', 'notBlank'),
 		'valor' => array('numeric'),
 	);
 
