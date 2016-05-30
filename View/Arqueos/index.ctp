@@ -4,6 +4,7 @@ echo $this->Html->css('/cash/css/style_cash');
 
 ?>
 
+<div class="content-white">
 
 
 <h1>Listado de Arqueos</h1>
@@ -103,4 +104,6 @@ if ( empty($cajas)) {
     <?php echo $this->Paginator->prev('<< ' . __('anterior', true), array(), null, array('class' => 'disabled')); ?>
     | 	<?php echo $this->Paginator->numbers(); ?>
     <?php echo $this->Paginator->next(__('próximo', true) . ' >>', array(), null, array('class' => 'disabled')); ?>
+</div>
+
 </div>

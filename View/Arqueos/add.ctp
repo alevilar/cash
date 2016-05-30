@@ -4,80 +4,81 @@ $ingresoEfectivo = $egresoEfectivo = null;
 echo $this->Html->css('/cash/css/style_cash');
 
 ?>
+<div class="content-white">
+<div class="row">
+    <div class="col-sm-3">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <?php
+                $cajaName = 'Caja';
+                if (!empty($caja) && !empty($caja['Caja']) && !empty($caja['Caja']['name'])) {
+                    $cajaName = $caja['Caja']['name'];
+                }
+                $desde = date('d/m/y H:i:s', strtotime($desde));
+                $hasta = date('d/m/y H:i:s', strtotime($hasta));
+                echo "Tablas de datos con información<br>desde: $desde<br>hasta $hasta";
+                ?>
+            </div>
 
-<div class="col-md-3">
-    <div class="panel panel-info">
-        <div class="panel-heading">
-            <?php
-            $cajaName = 'Caja';
-            if (!empty($caja) && !empty($caja['Caja']) && !empty($caja['Caja']['name'])) {
-                $cajaName = $caja['Caja']['name'];
-            }
-            $desde = date('d/m/y H:i:s', strtotime($desde));
-            $hasta = date('d/m/y H:i:s', strtotime($hasta));
-            echo "Tablas de datos con información<br>desde: $desde<br>hasta $hasta";
-            ?>
+            <div class="panel-body">
+                <?php if (!empty($ingresosList)) { ?>
+                    <table class="table table-condensed table-bordered mini">
+                        <caption>Ventas</caption>
+                        <tbody>
+                            <tr>
+                                <th>Tipo de Pago</th>
+                                <th>Total</th>
+                            </tr>
+                            <?php foreach ($ingresosList as $ing) { ;?>
+                                <tr>
+                                    <td>
+                                        <?php echo $ing['TipoDePago']['name'] ?>
+                                    </td>
+                                    <td>
+                                        <?php echo "(".$ing[0]['cant'].") ".$this->Number->currency($ing[0]['total']); ?>
+                                    </td>
+                                </tr>
+                            <?php } ?>   
+                        </tbody>
+                    </table>
+                <?php } ?>
+
+
+                <?php if (!empty($egresosList)) { ?>
+                    <table class="table table-condensed table-bordered mini">
+                        <caption>Pagos<br>(Módulo contable)</caption>
+                        <tbody>
+                            <tr>
+                                <th>Tipo de Pago</th>
+                                <th>Total</th>
+                            </tr>
+                            <?php foreach ($egresosList as $eg) { ?>
+                                <tr>
+                                    <td>
+                                        <?php echo $eg['TipoDePago']['name'] ?>
+                                    </td>
+                                    <td>
+                                        <?php echo "(".$eg[0]['cant'].") ".$this->Number->currency($eg[0]['total']); ?>
+                                    </td>
+                                </tr>
+                            <?php } ?>    
+                        </tbody>
+                    </table>
+                <?php } ?>
+            </div>
         </div>
 
-        <div class="panel-body">
-            <?php if (!empty($ingresosList)) { ?>
-                <table class="table table-condensed table-bordered mini">
-                    <caption>Ventas</caption>
-                    <tbody>
-                        <tr>
-                            <th>Tipo de Pago</th>
-                            <th>Total</th>
-                        </tr>
-                        <?php foreach ($ingresosList as $ing) { ;?>
-                            <tr>
-                                <td>
-                                    <?php echo $ing['TipoDePago']['name'] ?>
-                                </td>
-                                <td>
-                                    <?php echo "(".$ing[0]['cant'].") ".$this->Number->currency($ing[0]['total']); ?>
-                                </td>
-                            </tr>
-                        <?php } ?>   
-                    </tbody>
-                </table>
-            <?php } ?>
-
-
-            <?php if (!empty($egresosList)) { ?>
-                <table class="table table-condensed table-bordered mini">
-                    <caption>Pagos<br>(Módulo contable)</caption>
-                    <tbody>
-                        <tr>
-                            <th>Tipo de Pago</th>
-                            <th>Total</th>
-                        </tr>
-                        <?php foreach ($egresosList as $eg) { ?>
-                            <tr>
-                                <td>
-                                    <?php echo $eg['TipoDePago']['name'] ?>
-                                </td>
-                                <td>
-                                    <?php echo "(".$eg[0]['cant'].") ".$this->Number->currency($eg[0]['total']); ?>
-                                </td>
-                            </tr>
-                        <?php } ?>    
-                    </tbody>
-                </table>
-            <?php } ?>
-        </div>
+        <?php echo $this->Form->button('Guardar Arqueo', array('type' => 'submit', 'class' => 'btn btn-lg btn-primary btn-block', 'id' => 'btn-submit', "form" => "ArqueoAddForm")); ?>
     </div>
 
-    <?php echo $this->Form->button('Guardar Arqueo', array('type' => 'submit', 'class' => 'btn btn-lg btn-primary btn-block', 'id' => 'btn-submit', "form" => "ArqueoAddForm")); ?>
-</div>
-
-<div class="col-md-9">
+<div class="col-sm-9">
     <div class="row">
         <?php
         echo $this->Form->create('Arqueo', array('id' => 'ArqueoAddForm'));
 
         echo $this->Form->input('id');
 
-        $classArqueoContainer = 'panel-primary';
+        $classArqueoContainer = 'panel-default';
         if (isset($this->data['Arqueo']['saldo'])) {
             if (abs($this->data['Arqueo']['saldo']) == 0) {
                 $classArqueoContainer = 'panel-success';
@@ -89,7 +90,7 @@ echo $this->Html->css('/cash/css/style_cash');
         }
         ?>
 
-        <div class="col-md-7">
+        <div class="col-sm-7">
             <div class="panel <?php echo $classArqueoContainer; ?>" id='arqueoContainer'>
                 <div class="panel-heading">
                     <h2>Arqueo de <?php echo $cajaName ?></h2>
@@ -97,7 +98,7 @@ echo $this->Html->css('/cash/css/style_cash');
 
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-sm-6">
                             <?php
                             if (empty($this->data['Arqueo']['caja_id'])) {
                                 echo $this->Form->input('caja_id');
@@ -111,7 +112,7 @@ echo $this->Html->css('/cash/css/style_cash');
                             ?>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-sm-6">
                             <?php
                             echo $this->Form->input('importe_inicial', array('class' => 'form-control muted'));
                             if (!empty($this->data['Arqueo']['ingreso']) || (!empty($caja) && !empty($caja['Caja']['name']) && !empty($caja['Caja']['computa_ingresos']) )) {
@@ -134,7 +135,7 @@ echo $this->Html->css('/cash/css/style_cash');
             </div>
         </div>
 
-        <div class="col-md-5">
+        <div class="col-sm-5">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <?php
@@ -162,7 +163,7 @@ echo $this->Html->css('/cash/css/style_cash');
                             );
                         ?>
                         </p>
-                        <div class="col-md-6">
+                        <div class="col-sm-6">
                             <?php
                             echo $this->Form->input('Zeta.total_ventas', array(
                                 'label' => 'Ventas del Día',
@@ -176,7 +177,7 @@ echo $this->Html->css('/cash/css/style_cash');
                             ?>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-sm-6">
                             <?php
                             echo $this->Form->input('Zeta.numero_comprobante', array(
                                 'step' => '1',
@@ -271,4 +272,5 @@ echo $this->Html->css('/cash/css/style_cash');
 
 
 <?php echo $this->Html->script('/cash/js/arqueos_add') ?>
- 
+</div>
+ </div>
