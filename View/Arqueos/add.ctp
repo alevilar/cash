@@ -4,11 +4,16 @@ $ingresoEfectivo = $egresoEfectivo = null;
 echo $this->Html->css('/cash/css/style_cash');
 
 ?>
+
+<script type="text/javascript">
+    Risto={};
+    Risto.printerFiscal = <?php echo json_encode( $printer, JSON_NUMERIC_CHECK )?>;
+</script>
 <div class="content-white">
 <div class="row">
-    <div class="col-sm-3">
+    <div class="col-sm-12">
         <div class="panel panel-info">
-            <div class="panel-heading">
+            <div class="panel-heading center">
                 <?php
                 $cajaName = 'Caja';
                 if (!empty($caja) && !empty($caja['Caja']) && !empty($caja['Caja']['name'])) {
@@ -16,60 +21,143 @@ echo $this->Html->css('/cash/css/style_cash');
                 }
                 $desde = date('d/m/y H:i:s', strtotime($desde));
                 $hasta = date('d/m/y H:i:s', strtotime($hasta));
-                echo "Tablas de datos con información<br>desde: $desde<br>hasta $hasta";
+                echo "Tablas de datos con información desde: <b>$desde</b> hasta <b>$hasta</b>";
                 ?>
             </div>
 
             <div class="panel-body">
-                <?php if (!empty($ingresosList)) { ?>
-                    <table class="table table-condensed table-bordered mini">
-                        <caption>Ventas</caption>
-                        <tbody>
-                            <tr>
-                                <th>Tipo de Pago</th>
-                                <th>Total</th>
-                            </tr>
-                            <?php foreach ($ingresosList as $ing) { ;?>
+                <div class="col-sm-6">
+                    <?php if (!empty($ingresosList)) { ?>
+                    <?php $totalVentas = array_pop( $ingresosList) ?>
+                        <table class="table table-condensed table-bordered mini">
+                            <caption>Ventas <b><?php echo $this->Number->currency($totalVentas[0]["total"])?></b></caption>
+                            <tbody>
                                 <tr>
-                                    <td>
-                                        <?php echo $ing['TipoDePago']['name'] ?>
-                                    </td>
-                                    <td>
-                                        <?php echo "(".$ing[0]['cant'].") ".$this->Number->currency($ing[0]['total']); ?>
-                                    </td>
+                                    <?php foreach ($ingresosList as $ing) { ;?>
+                                        <th>
+                                            <?php echo $ing['TipoDePago']['name'] ?>
+                                        </th>
+                                       
+                                <?php } ?>   
                                 </tr>
-                            <?php } ?>   
-                        </tbody>
-                    </table>
-                <?php } ?>
-
-
-                <?php if (!empty($egresosList)) { ?>
-                    <table class="table table-condensed table-bordered mini">
-                        <caption>Pagos<br>(Módulo contable)</caption>
-                        <tbody>
-                            <tr>
-                                <th>Tipo de Pago</th>
-                                <th>Total</th>
-                            </tr>
-                            <?php foreach ($egresosList as $eg) { ?>
                                 <tr>
-                                    <td>
-                                        <?php echo $eg['TipoDePago']['name'] ?>
-                                    </td>
-                                    <td>
-                                        <?php echo "(".$eg[0]['cant'].") ".$this->Number->currency($eg[0]['total']); ?>
-                                    </td>
+                                <?php foreach ($ingresosList as $ing) { ;?>
+                                        <td>
+                                            <?php echo "(".$ing[0]['cant'].") ".$this->Number->currency($ing[0]['total']); ?>
+                                        </td>
+                                <?php } ?>   
                                 </tr>
-                            <?php } ?>    
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
                 <?php } ?>
+                </div>
+
+                <div class="col-sm-6">
+                    <?php if (!empty($egresosList)) { ?>
+                        <?php $totalCompras = array_pop( $egresosList );?>
+                        <table class="table table-condensed table-bordered mini">
+                            <caption>Pagos (Módulo contable) <b><?php echo $this->Number->currency($totalCompras[0]["total"])?></b></caption>
+                            <tbody>
+                                <tr>
+                                    <?php foreach ($egresosList as $eg) { ?>
+                                        <td>
+                                            <?php echo $eg['TipoDePago']['name'] ?>
+                                        </td>
+                                <?php } ?>  
+                                </tr>
+                                <tr>
+                                <?php foreach ($egresosList as $eg) { ?>
+                                        <td>
+                                            <?php echo "(".$eg[0]['cant'].") ".$this->Number->currency($eg[0]['total']); ?>
+                                        </td>
+                                <?php } ?>    
+                                </tr>
+                            </tbody>
+                        </table>
+                    <?php } ?>
+                </div>
             </div>
         </div>
 
         <?php echo $this->Form->button('Guardar Arqueo', array('type' => 'submit', 'class' => 'btn btn-lg btn-primary btn-block', 'id' => 'btn-submit', "form" => "ArqueoAddForm")); ?>
     </div>
+
+     <div class="col-sm-3">
+            <div id="billetines">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+
+                        <p class="muted">Ingresar cantidades de cada billete</p>
+                    </div>
+
+                    <div class="panel-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label for="BilletesB500" class="col-sm-3 control-label">$500</label>
+                                <div class="col-sm-9">
+                                    <input type="number" class="form-control billete-value" id="BilletesB500" data-value="500">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="BilletesB100" class="col-sm-3 control-label">$100</label>
+                                <div class="col-sm-9">
+                                    <input type="number" class="form-control billete-value" id="BilletesB100" data-value="100">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="BilletesB50" class="col-sm-3 control-label">$50</label>
+                                <div class="col-sm-9">
+                                    <input type="number" class="form-control billete-value" id="BilletesB50" data-value="50">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="BilletesB20" class="col-sm-3 control-label">$20</label>
+                                <div class="col-sm-9">
+                                    <input type="number" class="form-control billete-value" id="BilletesB20" data-value="20">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="BilletesB10" class="col-sm-3 control-label">$10</label>
+                                <div class="col-sm-9">
+                                    <input type="number" class="form-control billete-value" id="BilletesB10" data-value="10">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="BilletesB5" class="col-sm-3 control-label">$5</label>
+                                <div class="col-sm-9">
+                                    <input type="number" class="form-control billete-value" id="BilletesB5" data-value="5">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="BilletesB2" class="col-sm-3 control-label">$2</label>
+                                <div class="col-sm-9">
+                                    <input type="number" class="form-control billete-value" id="BilletesB2" data-value="2">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="BilletesB1" class="col-sm-3 control-label">$1</label>
+                                <div class="col-sm-9">
+                                    <input type="number" class="form-control billete-value" id="BilletesB1" data-value="1">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="BilletesB0" class="col-sm-3 control-label">0.5c</label>
+                                <div class="col-sm-9">
+                                    <input type="number" class="form-control billete-value" id="BilletesB0" data-value="0.5">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="BilletesBA" class="col-sm-3 control-label">Otros</label>
+                                <div class="col-sm-9">
+                                    <input type="number" class="form-control billete-value" id="BilletesBA" data-value="1">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+     </div>
 
 <div class="col-sm-9">
     <div class="row">
@@ -168,11 +256,11 @@ echo $this->Html->css('/cash/css/style_cash');
                             echo $this->Form->input('Zeta.total_ventas', array(
                                 'label' => 'Ventas del Día',
                                 'class' => 'form-control muted', 
-                                'required' => false
+                                'required' => false,                                 
                                 )
                             );
-                            echo $this->Form->input('Zeta.monto_neto', array('required' => false));
-                            echo $this->Form->input('Zeta.nota_credito_neto', array());
+                            echo $this->Form->input('Zeta.monto_neto', array('required' => false, 'id'=>'zeta-monto-neto'));
+                            echo $this->Form->input('Zeta.nota_credito_neto', array('id'=>'zeta-nc-neto'));
                             echo $this->Form->input('Zeta.observacion', array('label' => 'Obs. General Z'));
                             ?>
                         </div>
@@ -182,11 +270,13 @@ echo $this->Html->css('/cash/css/style_cash');
                             echo $this->Form->input('Zeta.numero_comprobante', array(
                                 'step' => '1',
                                 'label' => '#Comprobante',
-                                'class' => 'form-control muted', 'required' => false
+                                'class' => 'form-control muted', 
+                                'required' => false,
+                                'id'=>'zeta-numero',
                                 )
                             );
-                            echo $this->Form->input('Zeta.monto_iva', array());
-                            echo $this->Form->input('Zeta.nota_credito_iva', array());
+                            echo $this->Form->input('Zeta.monto_iva', array('id'=>'zeta-monto-iva'));
+                            echo $this->Form->input('Zeta.nota_credito_iva', array('id'=>'zeta-nc-iva'));
                             echo $this->Form->input('Zeta.observacion_comprobante_tarjeta', array('label' => 'Obs. Tarjetas'));
                             ?>
                         </div>
@@ -202,75 +292,13 @@ echo $this->Html->css('/cash/css/style_cash');
     </div>
 </div>
 
-<div id="billetines" style="display: none;">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <a class="pull-right" href="#billetines" onclick="jQuery('#billetines').hide('fade')"><button type="button" class="close" aria-hidden="true">&times;</button></a>
-            <p class="muted">Ingresar cantidades de cada billete</p>
-        </div>
-
-        <div class="panel-body">
-            <form class="form-horizontal" role="form">
-                <div class="form-group">
-                    <label for="BilletesB100" class="col-sm-2 control-label">$100</label>
-                    <div class="col-sm-10">
-                        <input type="number" class="form-control" id="BilletesB100" placeholder="Billetes de $100">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="BilletesB50" class="col-sm-2 control-label">$50</label>
-                    <div class="col-sm-10">
-                        <input type="number" class="form-control" id="BilletesB50" placeholder="Billetes de $50">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="BilletesB20" class="col-sm-2 control-label">$20</label>
-                    <div class="col-sm-10">
-                        <input type="number" class="form-control" id="BilletesB20" placeholder="Billetes de $20">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="BilletesB10" class="col-sm-2 control-label">$10</label>
-                    <div class="col-sm-10">
-                        <input type="number" class="form-control" id="BilletesB10" placeholder="Billetes de $10">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="BilletesB5" class="col-sm-2 control-label">$5</label>
-                    <div class="col-sm-10">
-                        <input type="number" class="form-control" id="BilletesB5" placeholder="Billetes de $5">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="BilletesB2" class="col-sm-2 control-label">$2</label>
-                    <div class="col-sm-10">
-                        <input type="number" class="form-control" id="BilletesB2" placeholder="Billetes de $2">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="BilletesB1" class="col-sm-2 control-label">$1</label>
-                    <div class="col-sm-10">
-                        <input type="number" class="form-control" id="BilletesB1" placeholder="Monedas de $1">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="BilletesB0" class="col-sm-2 control-label">0.5c</label>
-                    <div class="col-sm-10">
-                        <input type="number" class="form-control" id="BilletesB0" placeholder="Monedas de 50 Centavos">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="BilletesBA" class="col-sm-2 control-label">Otros</label>
-                    <div class="col-sm-10">
-                        <input type="number" class="form-control" id="BilletesBA" placeholder="Otros documentos">
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 
-<?php echo $this->Html->script('/cash/js/arqueos_add') ?>
+<?php echo $this->Html->script( array(
+            '/cash/js/arqueos_add',
+            '/aditions/js/fiscalberry',
+            '/aditions/js/printer_driver',
+            )); ?>
+
 </div>
  </div>

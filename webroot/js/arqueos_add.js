@@ -54,10 +54,43 @@
     
 
     $(function() {
+
+        function round4ceros( number ){
+            return Math.round(number * 10000) / 10000
+        }
         
         // imprimir cierre Z en ajax
         $("#btn-imprimir-z").bind('click', function(){
-            $.get(this.href);
+            if ( PrinterDriver.isConnected() ) {
+                PrinterDriver.fbrry.bind("fb:rta:dailyClose", function(ob, ev){
+                    console.debug("vino un daily close %o", ev.data);
+                    if ( ev.data.hasOwnProperty("zeta_numero") ) {
+                        var zetaNumero = ev.data["zeta_numero"];
+                        $("#zeta-numero").val(zetaNumero);
+                    }
+
+                    if ( ev.data.hasOwnProperty("monto_ventas_doc_fiscal") && ev.data.hasOwnProperty("monto_iva_doc_fiscal") ) {
+                        var importeTotal = ev.data["monto_ventas_doc_fiscal"];
+                        var importeIva = ev.data["monto_iva_doc_fiscal"];
+                        var importeNeto = importeTotal-importeIva;
+                        $("#zeta-monto-neto").val(round4ceros(importeNeto));
+                        $("#zeta-monto-iva").val(round4ceros(importeIva));
+                    }
+
+                    if ( ev.data.hasOwnProperty("monto_credito_nc") && ev.data.hasOwnProperty("monto_iva_nc") ) {
+                        var importeNcTotal = ev.data["monto_credito_nc"];
+                        var importeNcIva = ev.data["monto_iva_nc"];
+                        $("#zeta-nc-iva").val(round4ceros(importeNcIva));
+                        $("#zeta-nc-neto").val(round4ceros(importeNcTotal));
+                    }
+
+                    PrinterDriver.fbrry.unbind("fb:rta:dailyClose");
+                });
+                PrinterDriver.dailyClose("Z");
+            } else {
+                // enviar con ajax
+                $.get(this.href);
+            }
             return false;
         });
         
@@ -107,30 +140,19 @@
         });
         
         
-        function sumarBilletes(){
-            var b100 = new Number($('#BilletesB100').val())*100;
-            var b50 = new Number($('#BilletesB50').val())*50;
-            var b20 = new Number($('#BilletesB20').val())*20;
-            var b10 = new Number($('#BilletesB10').val())*10;
-            var b5 = new Number($('#BilletesB5').val())*5;
-            var b2 = new Number($('#BilletesB2').val())*2;
-            var b1 = new Number($('#BilletesB1').val())*1;
-            var b0 = new Number($('#BilletesB0').val())*0.5;
-            var bA = new Number($('#BilletesBA').val());
+        $billetesValues = $('.billete-value');
+        function sumarBilletes(ev){
+            var suma = 0;
+            for (var i = $billetesValues.length - 1; i >= 0; i--) {
+                suma += $billetesValues[i].value * $billetesValues[i].dataset.value;
+            }
             
-            $('#ArqueoImporteFinal').val(b100+b50+b20+b10+b5+b2+b1+b0+bA);
+            $('#ArqueoImporteFinal').val(suma);
             $('#ArqueoImporteFinal').trigger('keyup');
         }
         
-        $('#BilletesB100').bind('keyup', sumarBilletes);
-        $('#BilletesB50').bind('keyup', sumarBilletes);
-        $('#BilletesB20').bind('keyup', sumarBilletes);
-        $('#BilletesB10').bind('keyup', sumarBilletes);
-        $('#BilletesB5').bind('keyup', sumarBilletes);
-        $('#BilletesB2').bind('keyup', sumarBilletes);
-        $('#BilletesB1').bind('keyup', sumarBilletes);
-        $('#BilletesB0').bind('keyup', sumarBilletes);
-        $('#BilletesBA').bind('keyup', sumarBilletes);
+
+        $billetesValues.bind('keyup', sumarBilletes);
 
     });
 

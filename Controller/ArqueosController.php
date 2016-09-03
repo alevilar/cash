@@ -207,6 +207,9 @@ class ArqueosController extends CashAppController
         $this->__presetData($caja_id);
         
         $cajas = $this->Arqueo->Caja->find('list');
+
+        $Printer = ClassRegistry::init("Printers.Printer");
+        $this->set('printer', $Printer->read(null, Configure::read('Printers.fiscal_id') ));
         $this->set(compact('cajas'));
     }
     
