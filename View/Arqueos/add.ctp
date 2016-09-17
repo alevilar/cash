@@ -2,7 +2,6 @@
 $ingresoEfectivo = $egresoEfectivo = null;
 
 echo $this->Html->css('/cash/css/style_cash');
-
 ?>
 
 <script type="text/javascript">

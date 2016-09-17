@@ -184,7 +184,7 @@ class ArqueosController extends CashAppController
                 $this->request->data['Zeta']['arqueo_id'] = $this->Arqueo->id;
                 if ( !empty($this->request->data['Arqueo']['hacer_cierre_zeta']) ) {
                     if (!$this->Arqueo->Zeta->save($this->request->data)) {
-                        $this->Session->setFlash(__('No se pudo guardar el Zeta', true));
+                        $this->Session->setFlash(__('No se pudo guardar el Zeta'));
                         $error = true;
                     }
                 }
@@ -197,7 +197,7 @@ class ArqueosController extends CashAppController
                 $this->Session->setFlash("Se guardó un nuevo arqueo de caja");
                 $this->redirect(array('action'=>'edit', $this->Arqueo->id));
             } else {
-                $this->Session->setFlash(__('No se pudo guardar el Arqueo', true));
+                $this->Session->setFlash(__('No se pudo guardar el Arqueo'));
                 $error = true;
             }
         }
@@ -209,8 +209,11 @@ class ArqueosController extends CashAppController
         $cajas = $this->Arqueo->Caja->find('list');
 
         $Printer = ClassRegistry::init("Printers.Printer");
-        $this->set('printer', $Printer->read(null, Configure::read('Printers.fiscal_id') ));
-        $this->set(compact('cajas'));
+        $printer = $Printer->read(null, Configure::read('Printers.fiscal_id') );
+        if (empty($printer)){
+            $this->Session->setFlash(__("No hay impresora fiscal configurada para imprimir un informe Zeta"));
+        }
+        $this->set(compact('cajas', 'printer'));
     }
     
     
