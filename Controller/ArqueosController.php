@@ -210,7 +210,6 @@ class ArqueosController extends CashAppController
 
         $Printer = ClassRegistry::init("Printers.Printer");
         $printer = $Printer->read(null, Configure::read('Printers.fiscal_id') );
-        debug($printer);
         if (empty($printer)){
             $this->Session->setFlash(__("No hay impresora fiscal configurada para imprimir un informe Zeta"), 'Risto.flash_error');
         }
@@ -255,7 +254,13 @@ class ArqueosController extends CashAppController
         $this->Arqueo->Caja->recursive = -1;
         $caja = $this->Arqueo->Caja->read(null, $this->request->data['Arqueo']['caja_id']);
       
-        $this->set('caja', $caja);
+        $Printer = ClassRegistry::init("Printers.Printer");
+        $printer = $Printer->read(null, Configure::read('Printers.fiscal_id') );
+        if (empty($printer)){
+            $this->Session->setFlash(__("No hay impresora fiscal configurada para imprimir un informe Zeta"), 'Risto.flash_warning');
+        }
+
+        $this->set(compact('caja', 'printer'));
         
         $this->__presetIngresosEgresos($caja);
         

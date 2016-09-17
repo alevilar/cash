@@ -7,6 +7,8 @@ echo $this->Html->css('/cash/css/style_cash');
 <script type="text/javascript">
     Risto={};
     Risto.printerFiscal = <?php echo json_encode( $printer, JSON_NUMERIC_CHECK )?>;
+
+    Risto.PRECISION_COMA = "<?php echo Configure::read('Restaurante.precision')?>";
 </script>
 <div class="content-white">
 <div class="row">

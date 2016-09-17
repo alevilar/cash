@@ -56,7 +56,10 @@
     $(function() {
 
         function round4ceros( number ){
-            return Math.round(number * 10000) / 10000
+            var cantCeros = Risto.PRECISION_COMA;
+            var multiplicador = Math.pow(10, cantCeros);
+            number = parseFloat(number);
+            return Math.round( number * multiplicador )/multiplicador;
         }
         
         // imprimir cierre Z en ajax
