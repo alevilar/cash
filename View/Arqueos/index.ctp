@@ -46,7 +46,7 @@ if ( empty($cajas)) {
             <th>Saldo</th>
             <th>Importe Inicial</th>
             <th>Ventas</th>
-            <th>Otros Ingresos</th>
+            <th>Otros Cobros</th>
             <th>Pagos</th>
             <th>Otros Egresos</th>
             <th>Importe Final</th>

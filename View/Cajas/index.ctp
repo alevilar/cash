@@ -21,8 +21,8 @@
             <th>Id</th>
             <th>Nombre</th>
             <th>Cant. Arqueos</th>
-            <th>Computa Ingresos</th>
-            <th>Computa Egresos</th>
+            <th>Computa Cobros</th>
+            <th>Computa Pagos</th>
             <th></th>
             <th></th>
             <th></th>
