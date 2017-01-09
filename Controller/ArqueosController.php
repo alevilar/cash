@@ -18,9 +18,53 @@ class ArqueosController extends CashAppController
     public function index()
     {
         $this->Paginator->settings['order'] = 'Arqueo.datetime DESC';
+
+
+        $puedeVerTodo = $this->Arqueo->esUsuarioPrivilegiado();
+
+        if ( !$puedeVerTodo) {
+            $this->Paginator->settings['conditions'] = array(
+                'Arqueo.created_by' => $this->Auth->user("id")
+                );
+        }
+
         $arqueos = $this->Paginator->paginate();
+
         $cajas = $this->Arqueo->Caja->find('list');
-        $this->set(compact('arqueos', 'cajas'));
+        $roles = $this->Arqueo->CreatorGeneric->Rol->find('list');
+        $this->set(compact('arqueos', 'cajas', 'roles', 'puedeVerTodo'));
+    }
+
+
+    public function listar_mesas( $arqueoId ) {
+        if ( !$this->Arqueo->exists($arqueoId)) {
+            throw new NotFoundException("El arqueo no existe");
+        }
+
+        $arqueos = $this->Arqueo->read(null, $arqueoId);
+        $fechaCreacion = $arqueos['Arqueo']['created'];
+        
+        $arqueoAnterior = $this->Arqueo->find('first', array(
+            'conditions' => array(
+                'Arqueo.created <' => $fechaCreacion
+                ),
+            'order' => array("Arqueo.created" => 'DESC')
+            ));
+
+        // armo las condiciones de busqueda de la mesa
+        $conds = array(
+            'Mesa.time_cobro <=' => $fechaCreacion
+            );
+
+        if ( $arqueoAnterior ) {
+            $conds['Mesa.time_cobro >'] = $arqueoAnterior['Arqueo']['created'];
+        }
+
+        $mesas = $this->Pago->Mesa->find('all', array(
+            'conditions' => $conds,
+            ));
+
+        $this->set(compact('mesas'));
     }
     
     private function __presetIngresosEgresos ($caja = null) {

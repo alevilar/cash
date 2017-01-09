@@ -37,7 +37,6 @@ if ( empty($cajas)) {
 <br><br>
 
 
-
 <table class="table table-hover">
     <thead>
         <tr>
@@ -50,6 +49,9 @@ if ( empty($cajas)) {
             <th>Pagos</th>
             <th>Otros Egresos</th>
             <th>Importe Final</th>
+            <?php if ( $puedeVerTodo ){ ?>
+                <th>Creador</th>
+            <?php } ?>
             <th>Creado</th>
             <th>Modificado</th>
             <th></th>
@@ -83,9 +85,26 @@ if ( empty($cajas)) {
                 <td><?php echo  $this->Number->currency($arq['Arqueo']['egreso']) ?></td>
                 <td><?php echo  $this->Number->currency($arq['Arqueo']['otros_egresos']) ?></td>
                 <td><?php echo  $this->Number->currency($arq['Arqueo']['importe_final']) ?></td>
+
+                <?php if ( $puedeVerTodo ){ ?>
+                <td><?php 
+                if ( !empty($arq['Creator']['username']) ) {
+                    echo $arq['Creator']['username'];
+                } else {
+                    $rolId =  $arq['CreatorGeneric']['rol_id'];
+                    $rolName = $roles[$rolId];
+                    echo __("%s Genérico", $rolName);
+                }
+                ?></td>
+                <?php } ?>
+
                 <td><?php echo $this->Time->format($arq['Arqueo']['created'], '%a %d de %b %H:%M ') ?></td>
                 <td><?php echo $this->Time->format($arq['Arqueo']['modified'], '%a %d de %b %H:%M ') ?></td>
-                <td><?php echo $this->Html->link('Editar', array('action'=>'edit', $arq['Arqueo']['id']) ); ?></td>
+                <td>
+                    <?php echo $this->Html->link('Editar', array('action'=>'edit', $arq['Arqueo']['id']) ); ?>
+                        
+                    <?php echo $this->Html->link('Ver Mesas', array('action'=>'listar_mesas', $arq['Arqueo']['id']) ); ?>
+                </td>
             </tr>
 
         <?php } ?>

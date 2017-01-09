@@ -10,7 +10,11 @@
 
 <?php
 
- if ( (CakeSession::check("Auth.User.id")) && (CakeSession::read("Auth.User.is_admin") == 1 || CakeSession::read("Auth.User.rol_id") == ROL_ID_ENCARGADO || strlen(CakeSession::read("Auth.User.id")) >= 2) ) {
+	$userId = CakeSession::check("Auth.User.id");
+	$userIsAdmin = CakeSession::read("Auth.User.is_admin");
+	$userIsEncargado = CakeSession::read("Auth.User.rol_id")  == ROL_ID_ENCARGADO;
+	$userIsDuenio = CakeSession::read("Auth.User.rol_id") === null;
+ if ( $userId && ( $userIsAdmin || $userIsEncargado || $userIsDuenio) ) {
 //Si se puede checkear la id y si el usuario es admin o si tiene rol y es encargado, o el largo del id es igual o mayor a 2 te dejara ver el resto de botones del menú. Los usuarios genericos no pueden tener un id de más de un digito. Ya que solo se pueden crear 4 usuarios genericos por comercio y va cada uno en la tabla generic_users de su tenant. Por lo tanto, su id de usuario sera de 1 a 4.
  ?>	
 
