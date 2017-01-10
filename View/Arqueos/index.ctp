@@ -100,11 +100,31 @@ if ( empty($cajas)) {
 
                 <td><?php echo $this->Time->format($arq['Arqueo']['created'], '%a %d de %b %H:%M ') ?></td>
                 <td><?php echo $this->Time->format($arq['Arqueo']['modified'], '%a %d de %b %H:%M ') ?></td>
-                <td>
-                    <?php echo $this->Html->link('Editar', array('action'=>'edit', $arq['Arqueo']['id']) ); ?>
-                        
-                    <?php echo $this->Html->link('Ver Mesas', array('action'=>'listar_mesas', $arq['Arqueo']['id']) ); ?>
-                </td>
+
+
+                <td class="actions" style="min-width: 112px;">
+                <!-- Split button -->
+                <div class="btn-group">
+                  <?php echo $this->Html->link(__('Editar'), array('action'=>'edit', $arq['Arqueo']['id']), array('class'=>'btn btn-default  btn-sm btn-edit')); ?>
+
+                  <button type="button" class="btn btn-default  btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li class="">
+                        <?php echo $this->Html->link('Ver cobros', array('action' => 'listar_cobros', $arq['Arqueo']['id'])); ?>
+                    </li>
+                    <li class="">
+                        <?php echo $this->Html->link('Ver pagos', array('action' => 'listar_pagos', $arq['Arqueo']['id'])); ?>
+                    </li>
+                    <li class="">
+                        <?php echo $this->Html->link('Ver mesas', array('action' => 'listar_mesas', $arq['Arqueo']['id'])); ?>
+                    </li>
+                  </ul>
+                </div>
+                
+            </td>
             </tr>
 
         <?php } ?>
