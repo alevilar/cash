@@ -30,8 +30,16 @@ echo $this->Html->css('/cash/css/style_cash');
                 <div class="col-sm-6">
                     <?php if (!empty($ingresosList)) { ?>
                     <?php $totalVentas = array_pop( $ingresosList) ?>
+
+                        <?php echo $this->Html->link(__('Ver %s involucradas', Inflector::pluralize( Configure::read('Mesa.tituloMesa'))), array('action' => 'listar_mesas'), array('target'=>'_blank')); ?>
+
+                        <br>
+                        <?php echo $this->Html->link('Ver Cobros involucrados', array('action' => 'listar_cobros'), array('target'=>'_blank')); ?>
+
                         <table class="table table-condensed table-bordered mini">
                             <caption>Ventas <b><?php echo $this->Number->currency($totalVentas[0]["total"])?></b></caption>
+
+
                             <tbody>
                                 <tr>
                                     <?php foreach ($ingresosList as $ing) { ;?>
@@ -55,6 +63,10 @@ echo $this->Html->css('/cash/css/style_cash');
 
                 <div class="col-sm-6">
                     <?php if (!empty($egresosList)) { ?>
+                    <br>
+                        <?php echo $this->Html->link('Ver Pagos involucrados', array('action' => 'listar_pagos'), array('target'=>'_blank')); ?>
+
+
                         <?php $totalCompras = array_pop( $egresosList );?>
                         <table class="table table-condensed table-bordered mini">
                             <caption>Pagos (Módulo contable) <b><?php echo $this->Number->currency($totalCompras[0]["total"])?></b></caption>

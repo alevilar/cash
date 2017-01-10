@@ -22,7 +22,7 @@ class ArqueosController extends CashAppController
 
         $puedeVerTodo = $this->Arqueo->esUsuarioPrivilegiado();
 
-        if ( !$puedeVerTodo) {
+        if ( !$puedeVerTodo ) {
             $this->Paginator->settings['conditions'] = array(
                 'Arqueo.created_by' => $this->Auth->user("id")
                 );
@@ -36,35 +36,37 @@ class ArqueosController extends CashAppController
     }
 
 
-    public function listar_mesas( $arqueoId ) {
-        if ( !$this->Arqueo->exists($arqueoId)) {
-            throw new NotFoundException("El arqueo no existe");
-        }
+    public function listar_pagos ( $arqueoId = null ) {
+        $this->Arqueo->verifyExist($arqueoId);
 
-        $arqueo = $this->Arqueo->read(null, $arqueoId);
-        $fechaCreacion = $arqueo['Arqueo']['created'];
-        
-        $arqueoAnterior = $this->Arqueo->find('first', array(
-            'conditions' => array(
-                'Arqueo.created <' => $fechaCreacion
-                ),
-            'order' => array("Arqueo.created" => 'DESC')
-            ));
+        $fechas = $this->Arqueo->getFechaDesdeHasta($arqueoId);
 
-        // armo las condiciones de busqueda de la mesa
-        $conds = array(
-            'Mesa.time_cobro <=' => $fechaCreacion
-            );
+        $egresos = $this->Egreso->buscaDesdeHastaXFechaCobro($fechas);
 
-        if ( $arqueoAnterior ) {
-            $conds['Mesa.time_cobro >'] = $arqueoAnterior['Arqueo']['created'];
-        }
+        $this->set(compact('egresos', 'fechas'));
+    }
 
-        $mesas = $this->Pago->Mesa->find('all', array(
-            'conditions' => $conds,
-            ));
 
-        $this->set(compact('mesas', 'arqueo', 'arqueoAnterior'));
+    public function listar_cobros( $arqueoId = null ) {
+        $this->Arqueo->verifyExist($arqueoId);
+
+        $fechas = $this->Arqueo->getFechaDesdeHasta($arqueoId);
+
+        $pagos = $this->Pago->buscaDesdeHastaXFechaCobro($fechas);
+
+        $this->set(compact('pagos', 'fechas'));
+    } 
+   
+
+
+    public function listar_mesas( $arqueoId = null ) {
+        $this->Arqueo->verifyExist($arqueoId);
+
+        $fechas = $this->Arqueo->getFechaDesdeHasta($arqueoId);
+
+        $mesas = $this->Pago->Mesa->buscaDesdeHastaXFechaCobro($fechas);
+
+        $this->set(compact('mesas', 'fechas'));
     }
     
     private function __presetIngresosEgresos ($caja = null) {
@@ -72,6 +74,7 @@ class ArqueosController extends CashAppController
         if ( empty($this->request->data['Arqueo']['id']) ) {
             // Nuevo Arqueo
             $hasta = date('Y-m-d H:i:s', strtotime('now'));
+            Cache::write("fecha_arqueo_creacion", $hasta);
         } else {
             $hasta = $this->request->data['Arqueo']['datetime'];
         }
