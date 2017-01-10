@@ -21,18 +21,17 @@ class Arqueo extends CashAppModel {
             'Cash.Caja', 
 	);
         
-        public $hasOne = array(
-            'Cash.Zeta',
-        );
+    public $hasOne = array(
+        'Cash.Zeta',
+    );
 
-        public function beforeSave($options = array())
-        {
-            parent::beforeSave($options);
-            if (strlen( $this->data['Arqueo']['datetime'] ) == '16') {
-                $this->data['Arqueo']['datetime'] = $this->data['Arqueo']['datetime'].':59';
-            }
-            return true;
+    public function beforeSave($options = array())
+    {
+        parent::beforeSave($options);
+        if (strlen( $this->data['Arqueo']['datetime'] ) == '16') {
+            $this->data['Arqueo']['datetime'] = $this->data['Arqueo']['datetime'].':59';
         }
+        return true;
+    }
         
 }
-?>

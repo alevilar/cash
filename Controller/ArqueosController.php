@@ -41,8 +41,8 @@ class ArqueosController extends CashAppController
             throw new NotFoundException("El arqueo no existe");
         }
 
-        $arqueos = $this->Arqueo->read(null, $arqueoId);
-        $fechaCreacion = $arqueos['Arqueo']['created'];
+        $arqueo = $this->Arqueo->read(null, $arqueoId);
+        $fechaCreacion = $arqueo['Arqueo']['created'];
         
         $arqueoAnterior = $this->Arqueo->find('first', array(
             'conditions' => array(
@@ -64,7 +64,7 @@ class ArqueosController extends CashAppController
             'conditions' => $conds,
             ));
 
-        $this->set(compact('mesas'));
+        $this->set(compact('mesas', 'arqueo', 'arqueoAnterior'));
     }
     
     private function __presetIngresosEgresos ($caja = null) {
