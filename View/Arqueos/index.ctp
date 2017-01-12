@@ -90,9 +90,9 @@ if ( empty($cajas)) {
                 <td><?php 
                 if ( !empty($arq['Creator']['username']) ) {
                     echo $arq['Creator']['username'];
-                } else {
+                } else if ( !empty($arq['CreatorGeneric']['rol_id']) ) {
                     $rolId =  $arq['CreatorGeneric']['rol_id'];
-                    $rolName = $roles[$rolId];
+                    $rolName = $roles[$rolId];                    
                     echo __("%s Genérico", $rolName);
                 }
                 ?></td>

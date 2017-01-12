@@ -82,5 +82,6 @@ class Arqueo extends CashAppModel {
         return $fecha;
 
     }
+
         
 }

@@ -2,6 +2,7 @@
 $ingresoEfectivo = $egresoEfectivo = null;
 
 echo $this->Html->css('/cash/css/style_cash');
+
 ?>
 
 <script type="text/javascript">
@@ -20,10 +21,23 @@ echo $this->Html->css('/cash/css/style_cash');
                 if (!empty($caja) && !empty($caja['Caja']) && !empty($caja['Caja']['name'])) {
                     $cajaName = $caja['Caja']['name'];
                 }
-                $desde = date('d/m/y H:i:s', strtotime($desde));
-                $hasta = date('d/m/y H:i:s', strtotime($hasta));
-                echo "Tablas de datos con información desde: <b>$desde</b> hasta <b>$hasta</b>";
+
+
+                    if ( !empty($desde) && !empty($hasta) ) {
+                        $desde = $this->Time->format( "d-m-Y H:i",$desde);
+                        $hasta = $this->Time->format( "d-m-Y H:i",$hasta);
+                        echo __("Tablas de datos con información desde: <b>%s</b> hasta <b>%s</b>", $desde, $hasta );
+                    } else if ( !empty($hasta) && empty($desde)  ) {
+                        $hasta = $this->Time->format( "d-m-Y H:i",$hasta);
+                        echo __("Tablas de datos con información hasta <b>%s</b>", $hasta );
+                    } else if ( !empty($desde) && empty($hasta) ) {
+                        $desde = $this->Time->format( "d-m-Y H:i",$desde);
+                        echo __("Tablas de datos con información desde: <b>%s</b>", $desde );
+                    }
+
                 ?>
+
+
             </div>
 
             <div class="panel-body">
@@ -31,14 +45,27 @@ echo $this->Html->css('/cash/css/style_cash');
                     <?php if (!empty($ingresosList)) { ?>
                     <?php $totalVentas = array_pop( $ingresosList) ?>
 
-                        <?php echo $this->Html->link(__('Ver %s involucradas', Inflector::pluralize( Configure::read('Mesa.tituloMesa'))), array('action' => 'listar_mesas'), array('target'=>'_blank')); ?>
+                        <?php 
+
+                        $linkMesasInvolucradas = array('action' => 'listar_mesas');
+                        $linkCobros = array('action' => 'listar_cobros');
+                        $linkPagos = array('action' => 'listar_pagos');
+
+                        if ( !empty($this->request->data['Arqueo']['id']) ) {
+                            $arqueoId = $this->request->data['Arqueo']['id'];
+
+                            $linkMesasInvolucradas[] = $arqueoId;
+                            $linkCobros[] = $arqueoId;
+                            $linkPagos[] = $arqueoId;
+                        }
+                        $mesaTitle = Inflector::pluralize( Configure::read('Mesa.tituloMesa'));
+                        echo $this->Html->link(__('Ver %s involucradas', $mesaTitle), $linkMesasInvolucradas, array('target'=>'_blank')); ?>
 
                         <br>
-                        <?php echo $this->Html->link('Ver Cobros involucrados', array('action' => 'listar_cobros'), array('target'=>'_blank')); ?>
+                        <?php echo $this->Html->link('Ver Cobros involucrados', $linkCobros , array('target'=>'_blank')); ?>
 
                         <table class="table table-condensed table-bordered mini">
                             <caption>Ventas <b><?php echo $this->Number->currency($totalVentas[0]["total"])?></b></caption>
-
 
                             <tbody>
                                 <tr>
@@ -64,7 +91,7 @@ echo $this->Html->css('/cash/css/style_cash');
                 <div class="col-sm-6">
                     <?php if (!empty($egresosList)) { ?>
                     <br>
-                        <?php echo $this->Html->link('Ver Pagos involucrados', array('action' => 'listar_pagos'), array('target'=>'_blank')); ?>
+                        <?php echo $this->Html->link('Ver Pagos involucrados', $linkPagos, array('target'=>'_blank')); ?>
 
 
                         <?php $totalCompras = array_pop( $egresosList );?>

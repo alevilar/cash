@@ -92,7 +92,7 @@ class ArqueosController extends CashAppController
         }
         $ultimoArqueo = $this->Arqueo->find('first', $conditions);
         if ( empty($ultimoArqueo) ) {
-                $desde = date('Y-m-d H:i:s', strtotime('-4 month') );
+                $desde = null;
         } else {
             $desde = $ultimoArqueo['Arqueo']['datetime'];
             if ( empty($this->request->data['Arqueo']['importe_inicial']) ) {
@@ -100,10 +100,18 @@ class ArqueosController extends CashAppController
                 $this->request->data['Arqueo']['importe_inicial'] = $ultimoArqueo['Arqueo']['importe_final'];
             }
         }
+
+        $egConds = array();
+        if (!empty($desde)) {
+            $egConds['Egreso.fecha >'] = $desde;
+        }
+
+        if (!empty($hasta)) {
+            $egConds['Egreso.fecha <='] = $hasta;
+        }
+
          $egresosList = $this->Egreso->find('all', array(
-            'conditions' => array(
-                'Egreso.fecha BETWEEN ? AND ?' => array($desde, $hasta),
-            ),
+            'conditions' => $egConds,
             'group' => array('Egreso.tipo_de_pago_id'),
             'contain' => array(
                 'TipoDePago'
@@ -142,11 +150,16 @@ class ArqueosController extends CashAppController
         );
                 
         
-        
+        $ingConds = array();
+        if (!empty($desde)) {
+            $ingConds['Pago.created >'] = $desde;
+        }
+
+        if (!empty($hasta)) {
+            $ingConds['Pago.created <='] = $hasta;
+        }
         $ingresosList = $this->Pago->find('all', array(
-            'conditions' => array(
-                'Pago.created BETWEEN ? AND ?' => array($desde, $hasta),
-            ),
+            'conditions' => $ingConds,
             'group' => array('Pago.tipo_de_pago_id'),
             'contain' => array(
                 'TipoDePago',
@@ -258,7 +271,7 @@ class ArqueosController extends CashAppController
         $Printer = ClassRegistry::init("Printers.Printer");
         $printer = $Printer->read(null, Configure::read('Printers.fiscal_id') );
         if (empty($printer)){
-            $this->Session->setFlash(__("No hay impresora fiscal configurada para imprimir un informe Zeta"), 'Risto.flash_error');
+            $this->Session->setFlash(__("No hay impresora fiscal configurada para imprimir un informe Zeta"), 'Risto.Flash/flash_error');
         }
         $this->set(compact('cajas', 'printer'));
     }
@@ -274,7 +287,7 @@ class ArqueosController extends CashAppController
                     $this->Arqueo->Zeta->create();
                     $this->request->data['Zeta']['arqueo_id'] = $this->Arqueo->id;
                     if (!$this->Arqueo->Zeta->save($this->request->data)) {
-                        $this->Session->setFlash(__('No se pudo guardar el Zeta', true));
+                        $this->Session->setFlash(__('No se pudo guardar el Zeta'));
                         $error = true;
                     }
                 }
@@ -283,7 +296,7 @@ class ArqueosController extends CashAppController
                 }
                 
             } else {
-                $this->Session->setFlash(__('No se pudo guardar el Arqueo', true));
+                $this->Session->setFlash(__('No se pudo guardar el Arqueo'));
                 $error = true;
             }
             if (!$error) {
@@ -304,7 +317,7 @@ class ArqueosController extends CashAppController
         $Printer = ClassRegistry::init("Printers.Printer");
         $printer = $Printer->read(null, Configure::read('Printers.fiscal_id') );
         if (empty($printer)){
-            $this->Session->setFlash(__("No hay impresora fiscal configurada para imprimir un informe Zeta"), 'Risto.flash_warning');
+            $this->Session->setFlash(__("No hay impresora fiscal configurada para imprimir un informe Zeta"), 'Risto.Flash/flash_warning');
         }
 
         $this->set(compact('caja', 'printer'));
