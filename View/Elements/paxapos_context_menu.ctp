@@ -6,7 +6,7 @@
 
 	   <?php echo $this->Html->link('Cajas', 
 	   		array(
-	   			'controller'=>'cajas','action'=>'index'
+	   			'plugin' => 'cash','controller'=>'cajas','action'=>'index'
    			), array(
 	   			'class' => 'list-group-item',
 	   		));
