@@ -43,7 +43,7 @@ class ArqueosController extends CashAppController
 
         $egresos = $this->Egreso->buscaDesdeHastaXFechaCobro($fechas);
 
-        $this->set(compact('egresos', 'fechas'));
+        $this->set(compact('egresos', 'fechas', 'arqueoId'));
     }
 
 
@@ -54,7 +54,7 @@ class ArqueosController extends CashAppController
 
         $pagos = $this->Pago->buscaDesdeHastaXFechaCobro($fechas);
 
-        $this->set(compact('pagos', 'fechas'));
+        $this->set(compact('pagos', 'fechas', 'arqueoId'));
     } 
    
 
@@ -66,7 +66,7 @@ class ArqueosController extends CashAppController
 
         $mesas = $this->Pago->Mesa->buscaDesdeHastaXFechaCobro($fechas);
 
-        $this->set(compact('mesas', 'fechas'));
+        $this->set(compact('mesas', 'fechas', 'arqueoId'));
     }
     
     private function __presetIngresosEgresos ($caja = null) {
