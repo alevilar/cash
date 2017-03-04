@@ -39,9 +39,10 @@ class Arqueo extends CashAppModel {
         if (!is_null($id) ) {
             if ( !$this->exists($id) ) {
                 throw new NotFoundException("El arqueo no existe");
+                return false;
             }
+            return true;
         }
-
     }
 
 
@@ -82,6 +83,16 @@ class Arqueo extends CashAppModel {
         return $fecha;
 
     }
+   /**
+    * Cambia el id del usuario que creo dicho arqueo.
+    *
+    * @param integer $id ID del arqueo.
+    * @param string $user_id ID del usuario.
+    * @return true.
+    **/
+    public function cambiarCreador($id, $user_id) {
+        $this->updateAll(array('created_by' => $user_id), array('Arqueo.id' => $id));
 
-        
+        return true;
+    }      
 }

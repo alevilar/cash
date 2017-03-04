@@ -121,6 +121,13 @@ if ( empty($cajas)) {
                     <li class="">
                         <?php echo $this->Html->link('Ver mesas', array('action' => 'listar_mesas', $arq['Arqueo']['id'])); ?>
                     </li>
+                    <li class="">
+                        <?php 
+                        if ( $esDuenio ) {
+                        echo $this->Html->link('Cambiar creador', array('action' => 'cambiar_creador', $arq['Arqueo']['id']));
+                        } 
+                        ?>
+                    </li>
                   </ul>
                 </div>
                 
@@ -139,10 +146,6 @@ if ( empty($cajas)) {
     ));
     ?>
 </p>
-<div class="paging">
-    <?php echo $this->Paginator->prev('<< ' . __('anterior', true), array(), null, array('class' => 'disabled')); ?>
-    | 	<?php echo $this->Paginator->numbers(); ?>
-    <?php echo $this->Paginator->next(__('próximo', true) . ' >>', array(), null, array('class' => 'disabled')); ?>
-</div>
 
+<?php echo $this->element('Risto.pagination'); ?>
 </div>

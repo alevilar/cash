@@ -5,7 +5,7 @@ App::uses('CashAppController', 'Cash.Controller');
 class ArqueosController extends CashAppController
 {
 
-    public $uses = array('Cash.Arqueo', 'Account.Egreso', 'Mesa.Pago');
+    public $uses = array('Cash.Arqueo', 'Account.Egreso', 'Mesa.Pago', 'MtSites.Site', 'Users.User', 'Users.GenericUser');
     
     
     
@@ -19,7 +19,7 @@ class ArqueosController extends CashAppController
     {
         $this->Paginator->settings['order'] = 'Arqueo.datetime DESC';
 
-
+        $esDuenio = $this->Arqueo->esDuenio();
         $puedeVerTodo = $this->Arqueo->esUsuarioPrivilegiado();
 
         if ( !$puedeVerTodo ) {
@@ -32,7 +32,7 @@ class ArqueosController extends CashAppController
 
         $cajas = $this->Arqueo->Caja->find('list');
         $roles = $this->Arqueo->CreatorGeneric->Rol->find('list');
-        $this->set(compact('arqueos', 'cajas', 'roles', 'puedeVerTodo'));
+        $this->set(compact('arqueos', 'cajas', 'roles', 'puedeVerTodo', 'esDuenio'));
     }
 
 
@@ -335,5 +335,44 @@ class ArqueosController extends CashAppController
         $this->render('add');
     }
 
-}
+      public function cambiar_creador($id = null) {
+        if (!$this->Arqueo->verifyExist($id)) {
+            $this->redirect(array('action' => 'index'));
+        }
+        if ($this->request->is('post')) {
+            $user_id = "'".$this->request->data['cambiar_creador']['usuario']."'";
+            if(isset($user_id) && $user_id != "''") {
+                if($this->Arqueo->cambiarCreador($id, $user_id)) {
+                    $this->Session->setFlash(__("Creador de arqueo actualizado con exito."), 'Risto.Flash/flash_success');
+                    $this->redirect(array('action' => 'index'));
+                } else {
+                    $this->Session->setFlash(__("Error: no se pudo actualizar el creador del arqueo. Por favor, intentelo de nuevo."), 'Risto.Flash/flash_error');
+                    $this->redirect(array('action' => 'index')); 
+                }
+            } else if(empty($user_id) || $user_id == "''") {
+                $this->Session->setFlash(__("Error: no se pudo actualizar el creador del arqueo. ID Invalido."), 'Risto.Flash/flash_error');
+                $this->redirect(array('action' => 'index')); 
+            }
+        }
 
+        $id_arqueo = $id;
+        $url = $this->referer();
+        $userSites = $this->Auth->user("Site");
+        foreach ($userSites as $site) {
+            $name = $site['name'];
+
+            if (strpos($url, $name)) {
+                $site_id = $site['id'];
+            }
+
+        }
+
+        $users = $this->Site->buscarUsersComercio($site_id);
+
+        $nombre_usuario[] = $this->User->findById($users);
+
+        $generic_users = $this->GenericUser->buscarGenericos(); 
+
+        $this->set(compact('nombre_usuario', 'id_arqueo', 'generic_users'));
+    }
+}
