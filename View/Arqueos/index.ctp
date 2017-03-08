@@ -123,7 +123,7 @@ if ( empty($cajas)) {
                     </li>
                     <li class="">
                         <?php 
-                        if ( $esDuenio ) {
+                        if ( $puedeVerTodo ) {
                         echo $this->Html->link('Cambiar creador', array('action' => 'cambiar_creador', $arq['Arqueo']['id']), array('class' => 'btn-defaultModal'));
                         } 
                         ?>

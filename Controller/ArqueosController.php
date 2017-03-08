@@ -19,7 +19,6 @@ class ArqueosController extends CashAppController
     {
         $this->Paginator->settings['order'] = 'Arqueo.datetime DESC';
 
-        $esDuenio = $this->Arqueo->esDuenio();
         $puedeVerTodo = $this->Arqueo->esUsuarioPrivilegiado();
 
         if ( !$puedeVerTodo ) {
@@ -32,7 +31,7 @@ class ArqueosController extends CashAppController
 
         $cajas = $this->Arqueo->Caja->find('list');
         $roles = $this->Arqueo->CreatorGeneric->Rol->find('list');
-        $this->set(compact('arqueos', 'cajas', 'roles', 'puedeVerTodo', 'esDuenio'));
+        $this->set(compact('arqueos', 'cajas', 'roles', 'puedeVerTodo'));
     }
 
 
