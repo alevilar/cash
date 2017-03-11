@@ -93,7 +93,7 @@ if ( empty($cajas)) {
                 } else if ( !empty($arq['CreatorGeneric']['rol_id']) ) {
                     $rolId =  $arq['CreatorGeneric']['rol_id'];
                     $rolName = $roles[$rolId];                    
-                    echo __("%s Genérico", $rolName);
+                    echo __("%s", $rolName);
                 }
                 ?></td>
                 <?php } ?>
