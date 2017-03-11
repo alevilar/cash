@@ -28,9 +28,11 @@ class Arqueo extends CashAppModel {
     public function beforeSave($options = array())
     {
         parent::beforeSave($options);
+        /*
         if (strlen( $this->data['Arqueo']['datetime'] ) == '16') {
             $this->data['Arqueo']['datetime'] = $this->data['Arqueo']['datetime'].':59';
         }
+        */
         return true;
     }
 
@@ -83,16 +85,6 @@ class Arqueo extends CashAppModel {
         return $fecha;
 
     }
-   /**
-    * Cambia el id del usuario que creo dicho arqueo.
-    *
-    * @param integer $id ID del arqueo.
-    * @param string $user_id ID del usuario.
-    * @return true.
-    **/
-    public function cambiarCreador($id, $user_id) {
-        $this->updateAll(array('created_by' => $user_id), array('Arqueo.id' => $id));
 
-        return true;
-    }      
+  
 }

@@ -334,44 +334,32 @@ class ArqueosController extends CashAppController
         $this->render('add');
     }
 
-      public function cambiar_creador($id = null) {
+    public function cambiar_creador($id = null) {
         if (!$this->Arqueo->verifyExist($id)) {
             $this->redirect(array('action' => 'index'));
         }
-        if ($this->request->is('post')) {
-            $user_id = "'".$this->request->data['cambiar_creador']['usuario']."'";
-            if(isset($user_id) && $user_id != "''") {
-                if($this->Arqueo->cambiarCreador($id, $user_id)) {
-                    $this->Session->setFlash(__("Creador de arqueo actualizado con exito."), 'Risto.Flash/flash_success');
-                    $this->redirect(array('action' => 'index'));
-                } else {
-                    $this->Session->setFlash(__("Error: no se pudo actualizar el creador del arqueo. Por favor, intentelo de nuevo."), 'Risto.Flash/flash_error');
-                    $this->redirect(array('action' => 'index')); 
-                }
-            } else if(empty($user_id) || $user_id == "''") {
-                $this->Session->setFlash(__("Error: no se pudo actualizar el creador del arqueo. ID Invalido."), 'Risto.Flash/flash_error');
-                $this->redirect(array('action' => 'index')); 
+
+        if ($this->request->is(array('post', 'put'))) {
+            if ( $this->Arqueo->save($this->request->data, array('fields'=> array('created_by')))) {
+                $this->Session->setFlash( __("Se mnodificó correctamente el creador del arqueo") );
+            } else {
+                $this->Session->setFlash( __("Error al guardar el creador del arqueo"), 'flash_error' );
             }
         }
+        $this->Arqueo->recursive = -1;
+        $this->request->data = $this->Arqueo->read(null, $id);
 
-        $id_arqueo = $id;
-        $url = $this->referer();
-        $userSites = $this->Auth->user("Site");
-        foreach ($userSites as $site) {
-            $name = $site['name'];
+        $usuarios = $this->Site->buscarUsersComercio();
+        $listado_usuarios = Hash::combine($usuarios, '{n}.id', '{n}.username');
 
-            if (strpos($url, $name)) {
-                $site_id = $site['id'];
-            }
+        $listado_usuarios_genericos = $this->GenericUser->listarGenericosConNombreRol(); 
 
-        }
 
-        $users = $this->Site->buscarUsersComercio($site_id);
+        $usuarios =  array(
+            __('Usuarios de mi Comercio') => $listado_usuarios,
+            __('Usuarios Genéricos') => $listado_usuarios_genericos
+            );
 
-        $nombre_usuario[] = $this->User->findById($users);
-
-        $generic_users = $this->GenericUser->buscarGenericos(); 
-
-        $this->set(compact('nombre_usuario', 'id_arqueo', 'generic_users'));
+        $this->set(compact('usuarios'));
     }
 }

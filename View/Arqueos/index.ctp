@@ -1,6 +1,6 @@
 <?php
 echo $this->Html->css('/cash/css/style_cash');
-$this->element("Risto.layout_modal_edit");
+$this->element("Risto.layout_modal_edit", array('title'=>'Arqueo'));
 
 ?>
 
@@ -124,7 +124,7 @@ if ( empty($cajas)) {
                     <li class="">
                         <?php 
                         if ( $puedeVerTodo ) {
-                        echo $this->Html->link('Cambiar creador', array('action' => 'cambiar_creador', $arq['Arqueo']['id']), array('class' => 'btn-defaultModal'));
+                        echo $this->Html->link('Cambiar creador', array('action' => 'cambiar_creador', $arq['Arqueo']['id']), array('class' => 'btn-edit'));
                         } 
                         ?>
                     </li>

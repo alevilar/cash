@@ -1,12 +1,13 @@
 <div class="content-white">
-<h1>Cambiar creador del arqueo #<?php echo $id_arqueo;?></h1>
-<?php echo $this->Form->create('cambiar_creador'); ?>
+<h3>Cambiar creador del arqueo #<?php echo $this->request->data['Arqueo']['id'];?></h3>
 <?php 
-
-$opciones = $nombre_usuario + $generic_users;
-
-echo $this->Form->input('usuario', array('options' => $opciones, 'empty' => 'Lista de usuarios', 'class' => 'form-control', 'label' => ''));
+echo $this->Form->create('Arqueo');
+echo $this->Form->input('id');
+echo $this->Form->input('created_by', array(
+							'empty' => 'Seleccione', 
+							'options'=>$usuarios, 
+							'label'=>''));
+echo $this->Form->submit('Actualizar', array('class' => 'btn btn-success'));
+echo $this->Form->end();
 ?>
-<?php echo $this->Form->submit('Actualizar', array('class' => 'btn btn-success'));?>
-<?php echo $this->Form->end();?>
 </div>
