@@ -341,10 +341,11 @@ class ArqueosController extends CashAppController
 
         if ($this->request->is(array('post', 'put'))) {
             if ( $this->Arqueo->save($this->request->data, array('fields'=> array('created_by')))) {
-                $this->Session->setFlash( __("Se mnodificó correctamente el creador del arqueo") );
+                $this->Session->setFlash( __("Se modificó correctamente el creador del arqueo") );
             } else {
                 $this->Session->setFlash( __("Error al guardar el creador del arqueo"), 'flash_error' );
             }
+            $this->redirect(array('action' => 'index'));
         }
         $this->Arqueo->recursive = -1;
         $this->request->data = $this->Arqueo->read(null, $id);
